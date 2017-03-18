@@ -2,6 +2,7 @@ import read
 import json
 import bisect
 from enums import *
+from collections import namedtuple
 
 
 # Keys that should be filterable
@@ -23,17 +24,46 @@ BOOL_KEYS = [
     'material'
 ]
 INT_KEYS = [
-    'cost'
+    'cost',
     'level'
 ]
+IS_RESET = 'reset'
 
+IntRange = namedtuple('IntRange', 'min max')
 
 class Inquiry(dict):
 
+    def _copy(self, inquiry):
+
+        # Create a value for every entry in json
+        for key in inquiry:
+            self[key] = inquiry[key]
+
+    def _init(self):
+        # Default start
+
+        self[IS_RESET] = True  # Default behavior is to reset every time
+
+        # Set all enum keys
+        for enum in ENUM_KEYS:
+            self[enum[0]] = [True]*enum[1]
+
+        # Set all bools
+        for bool_key in BOOL_KEYS:
+            self[bool_key] = None
+
+        # Set all int ranges
+        for int_key in INT_KEYS:
+            self[int_key] = IntRange(0,0)
+
     # For each key specified, init the value
-    def __init__(self, json_obj):
-        for key in ENUM_KEYS+BOOL_KEYS+INT_KEYS:
-            self[key] = json_obj[key]
+    def __init__(self, *args):
+        
+        # Copy or default accordingly
+        if len(args):
+            self._copy(args[0])
+        else:
+            self._init()
 
 
 class Filter(object):
@@ -59,12 +89,19 @@ class Filter(object):
 
 
     # Add an index to correct enum array if spell[i].enum is defined
-    def _add_enums(self, spell, i)
+    def _add_enums(self, spell, i):
 
         # Add this spell to appropriate array if attr is defined
-        value = getattr(spell, enum_name)
-        if value is not None:
-            self.enums[enum_name][value] += [i]
+        for (enum_name, size) in ENUM_KEYS:
+            # Get value for this spell
+            value = getattr(spell, enum_name)
+
+            # Check if this is multiple values or not
+            if type(value) == type([]):
+                for v in value:
+                    self.enums[enum_name][v] += [i]
+            else:
+                self.enums[enum_name][value] += [i]
 
 
     # Return all spells that meet each enum inquiry
@@ -92,32 +129,29 @@ class Filter(object):
             self.bools[bool_name] = []
 
 
-    # Add this index iff spell.bool is True for EVERY bool
-    def _add_bool(self, spell, i):
+    # For each field, add this index iff spell.bool is True
+    def _add_bools(self, spell, i):
         
-        # Add all non-None types
         for bool_name in BOOL_KEYS:
-            value = getattr(spell, bool_name)
-            if value is not None:
-                self.bools[bool_name] += [(value,i)]  # (Truth value, index)
+            if getattr(spell, bool_name):
+                self.bools[bool_name] += [i]
 
 
     # Return all bools that match the inquiry
     def _get_bools(self, inquiry):
 
-        matches = None
+        # Everything matches null inquiry
+        matches = [i for i in range(len(length.spellbook))]
 
         for bool_name in BOOL_KEYS:
-            # Init to everything
-            if matches is None:
-                matches = self.bools[bool_name] 
-
-            # This field has a valid inquiry
+            # Get intersection of matches and new bool matches
             value = inquiry[bool_name]
-            if value is not None:
-                # Get intersection of matches and new bool matches
+            if value:
                 matches = [ match for match in matches
-                            if match in self.bools[bool_name][0] == value ]
+                            if match in self.bools[bool_name] ]
+            if value is not None:
+                matches = [ match for match in matches
+                            if match not in self.bools[bool_name] ]
 
         return matches
 
@@ -164,7 +198,7 @@ class Filter(object):
                 lb = bisect.bisect_left(self.ranges[key], min_val)
                 rb = bisect.bisect(self.ranges[key], max_val)
                 matches = [ match for match in matches
-                            if match in self.ranges[key][lb:rb]
+                            if match in self.ranges[key][lb:rb] ]
 
 
     # Init a spell filter from a json file
@@ -173,11 +207,13 @@ class Filter(object):
         # Init values
         self.spellbook = read.get_spellbook(data_file)
         self.display = []
+        DICT = self.spellbook[0].__dict__
 
-        # Indexes
-        self._init_spell_idx()
-        self._init_enums()
-        self._init_bools()
+        # Init values
+        self._init_spell_idx()  # name -> spellbook_idx
+        self._init_enums()  # enumeration values
+        self._init_bools()  # boolean values
+        self._init_ranges()  # integer ranges
 
         # Fill indexes
         i = 0
@@ -189,19 +225,19 @@ class Filter(object):
             i += 1
         self._sort_ranges()
 
-    def query_by_name(self, names)
+    def query_by_name(self, names):
 
         # Clear display if instructed
         if inquiry[IS_RESET]: self.display = []
 
         # Do some minor input cleaning, first
-        for name in names.split(',')
+        for name in names.split(','):
             name = name.strip().lower()
             if name in self.spell_idx:
                 self.display += [ self.spellbook[self.spell_idx[name]] ]
 
     # Update display based on inquiry
-    def filter(self, inquiry):
+    def query_by_value(self, inquiry):
 
         # Clear display if instructed
         if inquiry[IS_RESET]: self.display = []
@@ -216,3 +252,9 @@ class Filter(object):
         for match in matches:
             if match not in self.display:
                 self.display += [match]
+
+    def filter(self, inquiry):
+        if inquiry['search_method'] == 'by_name':
+            query_by_name(inquiry)
+        else:
+            query_by_value(inquiry)

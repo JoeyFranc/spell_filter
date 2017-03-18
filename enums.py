@@ -3,14 +3,15 @@
 # Constants
 NUM_SPELLS = 415
 
-# Sources enum
-PHB  = 0
-EE   = 1
+# source
+PHB = 0
+EE = 1
 SCAG = 2
 TROT = 3
-UA   = 4
+UA = 4
+SOURCE_SIZE = 5
 
-# Race enum
+# race
 HUMAN = 0
 DWARF = 1
 ELF = 2
@@ -19,9 +20,9 @@ DRAGONBORN = 4
 GNOME = 5
 HALF_ELF = 6
 HALF_ORC = 7
-TIEFLING = 8 
+TIEFLING = 8
 
-# Stat enum
+# stat
 STR = 0
 DEX = 1
 CON = 2
@@ -29,7 +30,7 @@ INT = 3
 WIS = 4
 CHA = 5
 
-# Class (role) enum
+# classes
 BARBARIAN = 0
 BARD = 1
 CLERIC = 2
@@ -43,8 +44,9 @@ SORCERER = 9
 WARLOCK = 10
 WIZARD = 11
 RITUAL_CASTER = 12
+CLASSES_SIZE = 13
 
-# Magic School
+# school
 ABJURATION = 0
 CONJURATION = 1
 DIVINATION = 2
@@ -53,15 +55,19 @@ EVOCATION = 4
 ILLUSION = 5
 NECROMANCY = 6
 TRANSMUTATION = 7
+SCHOOL_SIZE = 8
+
 
 class Invalid_Enum(Exception):
 
     def __init__(self, family, value):
         self.family = family
         self.value = value
+
     def __str__(self): return 'Attempted to find a class for ' + self.role
 
-def v_source2string( source ):
+
+def v_source2str(source):
 # Verbosely return a string describing a source
 
     if   source == PHB:     return 'Players Handbook'

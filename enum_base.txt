@@ -1,0 +1,64 @@
+
+""" This file gets copied verbatim into the enum pyfile. DO NOT TOUCH """
+
+# race
+HUMAN = 0
+DWARF = 1
+ELF = 2
+HAFLING = 3
+DRAGONBORN = 4
+GNOME = 5
+HALF_ELF = 6
+HALF_ORC = 7
+TIEFLING = 8 
+
+# stat
+STR = 0
+DEX = 1
+CON = 2
+INT = 3
+WIS = 4
+CHA = 5
+
+#ENUMSTOP#
+
+# Constants
+NUM_SPELLS = 415
+
+class Invalid_Enum(Exception):
+
+    def __init__(self, family, value):
+        self.family = family
+        self.value = value
+    def __str__(self): return 'Attempted to find a class for ' + self.role
+
+def v_source2str(source):
+# Verbosely return a string describing a source
+
+    if   source == PHB:     return 'Players Handbook'
+    elif source == EE:      return 'Elemental Evil Player\'s Companion'
+    elif source == SCAG:    return 'Sword Coast Adventurer\'s Guide'
+    elif source == TROT:    return 'The Rise of Tiamat'
+    elif source == UA:      return 'Unearthed Arcana'
+
+    raise Invalid_Enum('Source Material', source)
+
+def str2class( string ):
+
+    if   string == 'BARBARIAN' or string == 'barbarian' or string == 'Barbarian':   return BARBARIAN
+    elif string == 'bard' or string == 'Bard' or string == 'BARD':                  return BARD
+    elif string == 'cleric' or string == 'Cleric' or string == 'CLERIC':            return CLERIC
+    elif string == 'druid' or string == 'Druid' or string == 'DRUID':               return DRUID
+    elif string == 'figher' or string == 'Figher' or string == 'FIGHTER':           return FIGHTER
+    elif string == 'monk' or string == 'Monk' or string == 'MONK':                  return MONK
+    elif string == 'paladin' or string == 'Paladin' or string == 'PALADIN':         return PALADIN
+    elif string == 'ranger' or string == 'Ranger' or string == 'RANGER':            return RANGER
+    elif string == 'rogue' or string == 'Rogue' or string == 'ROGUE':               return RANGER
+    elif string == 'sorcerer' or string == 'Sorcerer' or string == 'SORCERER':      return SORCERER
+    elif string == 'warlock' or string == 'Warlock' or string == 'WARLOCK':         return WARLOCK
+    elif string == 'wizard' or string == 'Wizard' or string == 'WIZARD':            return WIZARD
+    elif string == 'ritual caster' or string == 'Ritual Caster' \
+    or   string == 'RITUAL CASTER' or string == 'Ritual caster':                    return RITUAL_CASTER
+
+    raise Invalid_Enum('Class',string)
+
