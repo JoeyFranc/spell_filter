@@ -65,17 +65,37 @@ class Spell(object):
 
     def __str__(self):
 
-        output = self.name + '\n\n' + 'Level '+str(self.level)
-        for c in self.classes: output += ' '+class2str(c)
-        output += ' '+school2str(self.school)+' spell from '+\
-        v_source2str(self.source) + '\n\n'
+        # The title
+        output = _h1(self.name) + '\n\n'
+
+        # Make the heading
+        block = 'Level '+ str(self.level)
+        block += ' ' + school2str(self.school)
+        output += _h3(block) + '\n\n'
+
+        # Note 
+        block = ''
+        for c in self.classes:
+            block += class2str(c) + ', '
+        if block:
+            block = block[:-2] + ' spell  |  '
+        block += v_source2str(self.source)
+        output += _p(block)
+
+        # Points of interest
         output += \
-        'Casting Time: '+self.casting_time +'\n' + \
-        'Range: '+self.range + '\n' + \
-        'Components: '+self._print_components() + '\n'\
-        'Duration: '+self.duration+'\n\n'+\
-        self.description
-        if self.higher_level: output += self.higher_level
+        _p( _b('Casting Time: ')+self.casting_time ) +'\n' + \
+        _p( _b('Range: ')+self.range ) + '\n' + \
+        _p( _b('Components: ')+self._print_components() ) + '\n' + \
+        _p( _b('Duration: ')+self.duration ) + '\n\n'
+
+        # Add the description
+        output += self.description
+
+        # Add higher level
+        if self.higher_level:
+            output += self.higher_level
+
         return output
 
 def get_spellbook(fn):
@@ -91,6 +111,12 @@ def get_spellbook(fn):
 
 
 """ Private Methods """
+
+def _h1(string): return '<h1>'+string+'</h1>'
+def _h2(string): return '<h2>'+string+'</h2>'
+def _h3(string): return '<h3>'+string+'</h3>'
+def _b(string): return '<b>'+string+'</b>'
+def _p(string): return '<p>'+string+'</p>'
 
 def _get_source(line):
 # line is a json string containing the source name. returns source enum

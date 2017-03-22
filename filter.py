@@ -85,7 +85,9 @@ class Filter(object):
         # Init enum keys
         self.enums = {}
         for (enum_name, size) in ENUM_KEYS:
-            self.enums[enum_name] = [[]] * size  # Init to N empty arrays
+            self.enums[enum_name] = [[]]
+            for i in range(size-1):
+                self.enums[enum_name] += [[]]  # Init to N empty arrays
 
 
     # Add an index to correct enum array if spell[i].enum is defined
@@ -107,16 +109,22 @@ class Filter(object):
     # Return all spells that meet each enum inquiry
     def _get_enums(self, inquiry):
 
-        # Everything matches null inquiry
-        matches = [i for i in range(len(self.spellbook))]
+        matches = [ i for i in range(len(self.spellbook)) ]
 
+        # Define every value
         for (enum_name, size) in ENUM_KEYS:
-            # This field has a valid inquiry
-            value = inquiry[enum_name]
-            if value is not None and value < size:
-                # Get intersection of matches and new enum matches
-                matches = [ match for match in matches
-                            if match in self.enums[enum_name][value] ]
+
+            # Add all spell indexes that match filter request
+            if enum_name in inquiry and 'None' not in inquiry[enum_name]:
+                print(enum_name)
+                # Find all spells that match this enum filter
+                query = []
+                for checked_value in inquiry[enum_name]:
+                    query += self.enums[enum_name][int(checked_value)]
+                    print(int(checked_value))
+
+                # Get intersection of matches and query
+                matches = [ match for match in matches if match in query ]
 
         return matches
 
@@ -141,15 +149,16 @@ class Filter(object):
     def _get_bools(self, inquiry):
 
         # Everything matches null inquiry
-        matches = [i for i in range(len(length.spellbook))]
+        matches = [i for i in range(len(self.spellbook))]
 
         for bool_name in BOOL_KEYS:
             # Get intersection of matches and new bool matches
-            value = inquiry[bool_name]
-            if value:
+            value = None  # Default to doing nothing for undefined bools
+            if bool_name in inquiry: value = inquiry[bool_name][0]
+            if value == 'True':
                 matches = [ match for match in matches
                             if match in self.bools[bool_name] ]
-            if value is not None:
+            if value == 'False':  # Bool was purposefully set to False
                 matches = [ match for match in matches
                             if match not in self.bools[bool_name] ]
 
@@ -175,30 +184,41 @@ class Filter(object):
 
 
     def _sort_ranges(self):
-
+        ''' Sorts all ranged entries from low to high
+        '''
         for key in INT_KEYS:
             self.ranges[key].sort()
 
 
     def _get_ranges(self, inquiry):
+        ''' returns all spell indexes that match the specified range conditions
+            in the inquiry
+        '''
+        matches = [ i for i in range(len(self.spellbook)) ]
 
-        # Special init
-        matches = None
+        # For every set key
+        for key in INT_KEYS:
 
-        # For every key
-        for key in inquiry:
-            if key in INT_KEYS:
+            # Read min and max values
+            min_val = None
+            if key+'_min' in inquiry and inquiry[key+'_min'][0].isdigit():
+                min_val = inquiry[key+'_min'][0]
+            max_val = None
+            if key+'_max' in inquiry and inquiry[key+'_max'][0].isdigit():
+                max_val = inquiry[key+'_max'][0]
+                
+            # Get specified range and lb and rb
+            if not (min_val is None and max_val is None):
 
-                # Init the matches here due to tuple values in range arrays
-                if matches is not None:
-                    matches = self.ranges[key]
+                # Set left bound and right bound
+                if min_val is None: lb = 0
+                else: lb = bisect.bisect_left(self.ranges[key], (int(min_val),0))
+                if max_val is None: rb = len(self.ranges[key])
+                else: rb = bisect.bisect(self.ranges[key], (int(max_val),0))
+                matches = [ i for (value,i) in self.ranges[key][lb:rb]
+                            if i in matches ]
 
-                # Get specified range and lb and rb
-                min_val, max_val = inquiry[key]
-                lb = bisect.bisect_left(self.ranges[key], min_val)
-                rb = bisect.bisect(self.ranges[key], max_val)
-                matches = [ match for match in matches
-                            if match in self.ranges[key][lb:rb] ]
+        return matches
 
 
     # Init a spell filter from a json file
@@ -206,8 +226,9 @@ class Filter(object):
 
         # Init values
         self.spellbook = read.get_spellbook(data_file)
+        for i in range(len(self.spellbook)):
+            self.spellbook[i].id = i
         self.display = []
-        DICT = self.spellbook[0].__dict__
 
         # Init values
         self._init_spell_idx()  # name -> spellbook_idx
@@ -225,10 +246,8 @@ class Filter(object):
             i += 1
         self._sort_ranges()
 
+    # Add queries to display
     def query_by_name(self, names):
-
-        # Clear display if instructed
-        if inquiry[IS_RESET]: self.display = []
 
         # Do some minor input cleaning, first
         for name in names.split(','):
@@ -236,25 +255,21 @@ class Filter(object):
             if name in self.spell_idx:
                 self.display += [ self.spellbook[self.spell_idx[name]] ]
 
-    # Update display based on inquiry
+    # Add queries to display
     def query_by_value(self, inquiry):
 
-        # Clear display if instructed
-        if inquiry[IS_RESET]: self.display = []
-
-        # Get all matches
-        enums = self._get_enums()
-        bools = self._get_bools()
-        ranges = self._get_ranges()
-        matches = [match for match in enums if match in bools and match in ranges]
-
-        # Update display
-        for match in matches:
-            if match not in self.display:
-                self.display += [match]
+        # Get intersection of sub-category matches
+        enums = self._get_enums(inquiry)
+        bools = self._get_bools(inquiry)
+        ranges = self._get_ranges(inquiry)
+        print(len(enums), 'enums')
+        print(len(bools), 'bools')
+        print(len(ranges), 'ranges')
+        self.display += [ self.spellbook[match] for match in enums
+                         if match in bools and match in ranges ]
 
     def filter(self, inquiry):
-        if inquiry['search_method'] == 'by_name':
-            query_by_name(inquiry)
+        if inquiry['search_method'][0] == 'name':
+            self.query_by_name(inquiry['name'][0])
         else:
-            query_by_value(inquiry)
+            self.query_by_value(inquiry)

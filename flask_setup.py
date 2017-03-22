@@ -28,7 +28,7 @@ def get_inquiry(inquiry_form):
 def inquire(inquiry):
 # Perform a filter as instructed
 
-    f.filter(f.inquiry(inquiry))
+    f.filter(inquiry)
 
 def read_cookies(cookies):
     # Maintain display from last session if applicable
@@ -48,8 +48,7 @@ def handle(request):
 # Handle a request
     
     inquiry = get_inquiry(request.form)
-    print( inquiry['reset'] )
-    if inquiry['reset']: read_cookies(request.cookies)
+    if 'append' in inquiry: read_cookies(request.cookies)
     inquire(inquiry)
 
 # The index
@@ -61,16 +60,17 @@ def index():
     # Always init to empty display
     f.display = []
 
-    # Do a query before rendering page if applicable
-    if request.method == 'POST':
-        handle(request)
+    try:
+        # Do a query before rendering page if applicable
+        if request.method == 'POST':
+            handle(request)
 
-    # Render the page
-    return render_template('index.html', show=str, display=f.display)
+        # Render the page
+        return render_template('index.html', show=str, display=f.display)
 
     # If error occurs, go to error page
-    # except:
-    #     return redirect('error', code=303)
+    except:
+        return redirect('error', code=303)
 
 @app.route('/error')
 def error():

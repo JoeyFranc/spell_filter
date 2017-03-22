@@ -10,179 +10,178 @@
 </head>
 <body>
 
+    <form name="inquiry" method="POST">
+
     <!-- SPELL FILTER DIV -->
     <div id="filter" class="input">
 
-    <h1>Joey's Spell Filter :D</h1>
-
-    <form name="inquiry" method="POST">
-
         <!-- Search settings --> 
         <div name="settings">
-            <div name="append" class="pane">
-            <b>Append to previous search?</b>
-                <input name="reset" type="checkbox" value="reset">
+            <div name="reset" class="pane">
+                <b>Append to previous search?</b>
+                    <input type="checkbox" name="append" value="true">
             </div>
 
             <div name="method" class="pane">
-            <b>Search Method?</b>
-                By name:
-                <input type="radio" name="search_method" value="name">
-                By value:
-                <input type="radio" name="search_method" value="value">
+                <b>Search Method?</b>
+                    By name:
+                    <input type="radio" name="search_method" value="name">
+                    By value:
+                    <input type="radio" name="search_method" value="value" checked>
             </div>
         </div>
 
         <br><br>
-        
+            
         <!-- Search by name -->
         <div name="name_search" class="pane">
-		<h2>Search by names (seperate by commas):</h2>
-			<input type="search" name="name" value="">
-			<input type="submit">
+            <h2>Search by names (seperate by commas):</h2>
+                <input type="search" name="name" value="">
+                <input type="submit">
         </div>
-		
-        <div class="pane">
-        <h2>Search by value:</h2>
+            
+        <div name="value_search" class="pane">
+            <h2>Search by value:</h2>
 
             <!-- School -->
             <div class="pane">
-            Schools<br>
-            <select name="school">
-                <option value="None">Any</option>
-                <option value="0">Abjuration</option>
-                <option value="1">Conjuration</option>
-                <option value="2">Divination</option>
-                <option value="3">Enchantment</option>
-                <option value="4">Evocation</option>
-                <option value="5">Illusion</option>
-                <option value="6">Necromancy</option>
-                <option value="7">Transmuation</option>
-            </select>
+                Schools<br>
+                <select name="school">
+                    <option value="None">Any</option>
+                    <option value="0">Abjuration</option>
+                    <option value="1">Conjuration</option>
+                    <option value="2">Divination</option>
+                    <option value="3">Enchantment</option>
+                    <option value="4">Evocation</option>
+                    <option value="5">Illusion</option>
+                    <option value="6">Necromancy</option>
+                    <option value="7">Transmuation</option>
+                </select>
             </div>
 
-			<!-- Sources -->
+            <!-- Sources -->
             <div class="pane">
-            Sources<br>
-			<input type="checkbox" name="source" value="phb">
-            Player's Handbook<br>
-			<input type="checkbox" name="source" value="ee">
-            Elemental Evil<br>
-			<input type="checkbox" name="source" value="scag" >
-            Sword Coast Adventurer's Guide<br>
-			<input type="checkbox" name="source" value="trot" >
-            The Rise of Tiamat<br>
-			<input type="checkbox" name="source" value="ua">
-            Unearthed Arcana<br>
+                Sources<br>
+                <input type="checkbox" name="source" value="0">
+                Player's Handbook<br>
+                <input type="checkbox" name="source" value="1">
+                Elemental Evil<br>
+                <input type="checkbox" name="source" value="2" >
+                Sword Coast Adventurer's Guide<br>
+                <input type="checkbox" name="source" value="3" >
+                The Rise of Tiamat<br>
+                <input type="checkbox" name="source" value="4">
+                Unearthed Arcana<br>
             </div>
 
             <!-- Classes -->
             <div class="pane">
-            Classes<br>
+                Classes<br>
                 <div class="pane">
-                <input type="checkbox" name="classes" value="None" checked>
-                <b>Any</b><br>
-                <input type="checkbox" name="classes" value="Barbarian">
-                Barbarian<br>
-                <input type="checkbox" name="classes" value="Bard">
-                Bard<br>
-                <input type="checkbox" name="classes" value="Cleric">
-                Cleric<br>
-                <input type="checkbox" name="classes" value="Druid">
-                Druid<br>
-                <input type="checkbox" name="classes" value="Fighter">
-                Fighter<br>
-                <input type="checkbox" name="classes" value="Monk">
-                Monk
+                    <input type="checkbox" name="classes" value="None" checked>
+                    <b>Any</b><br>
+                    <input type="checkbox" name="classes" value="0">
+                    Barbarian<br>
+                    <input type="checkbox" name="classes" value="1">
+                    Bard<br>
+                    <input type="checkbox" name="classes" value="2">
+                    Cleric<br>
+                    <input type="checkbox" name="classes" value="3">
+                    Druid<br>
+                    <input type="checkbox" name="classes" value="4">
+                    Fighter<br>
+                    <input type="checkbox" name="classes" value="5">
+                    Monk
                 </div>
 
                 <div class="pane">
-                <input type="checkbox" name="classes" value="Paladin">
-                Paladin<br>
-                <input type="checkbox" name="classes" value="Ranger">
-                Ranger<br>
-                <input type="checkbox" name="classes" value="Rogue">
-                Rogue<br>
-                <input type="checkbox" name="classes" value="Sorcerer">
-                Sorcerer<br>
-                <input type="checkbox" name="classes" value="Warlock">
-                Warlock<br>
-                <input type="checkbox" name="classes" value="Wizard">
-                Wizard<br>
-                <input type="checkbox" name="classes" value="Ritual Caster">
-                Ritual Caster<br>
+                    <input type="checkbox" name="classes" value="6">
+                    Paladin<br>
+                    <input type="checkbox" name="classes" value="7">
+                    Ranger<br>
+                    <input type="checkbox" name="classes" value="8">
+                    Rogue<br>
+                    <input type="checkbox" name="classes" value="9">
+                    Sorcerer<br>
+                    <input type="checkbox" name="classes" value="10">
+                    Warlock<br>
+                    <input type="checkbox" name="classes" value="11">
+                    Wizard<br>
+                    <input type="checkbox" name="classes" value="12">
+                    Ritual Caster<br>
                 </div>
             </div>
 
             <!-- Components -->
             <div class="pane">
-            Components<br>
-            <select name="v">
-                <option value="None">Any</option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-            </select>
-            Verbal<br>
+                Components<br>
+                <select name="v">
+                    <option value="None">Any</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                Verbal<br>
 
-            <select name="s">
-                <option value="None">Any</option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-            </select>
-            Somatic<br>
+                <select name="s">
+                    <option value="None">Any</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                Somatic<br>
 
-            <select name="m">
-                <option value="None">Any</option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-            </select>
-            Material<br>
+                <select name="m">
+                    <option value="None">Any</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                Material<br>
 
-            <!-- Ritual -->
-            <select name="is_ritual">
-                <option value="None">Any</option>
-                <option value="True">True</option>
-                <option value="False">False</option>
-            </select>
-            Ritual Cast<br>
+                <!-- Ritual -->
+                <select name="is_ritual">
+                    <option value="None">Any</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+                Ritual Cast<br>
             </div>
 
-			<!-- Level -->
+            <!-- Level -->
             <div class="pane">
-            Level Range<br>
+                Level Range<br>
 
-            Min:
-			<input type="number" name="level_min">
-            <br>
+                Min:
+                <input type="number" name="level_min">
+                <br>
 
-            Max:
-			<input type="number" name="level_max">
-            <br>
+                Max:
+                <input type="number" name="level_max">
+                <br>
 
-            <!-- Duration -->
-            <br>
-            Duration<br>
-            Min:
-			<input type="number" name="duration_min">
-            <br>
+                <!-- Duration -->
+                <br>
+                Duration<br>
+                Min:
+                <input type="number" name="duration_min">
+                <br>
 
-            Max:
-			<input type="number" name="duration_max">
-            <br>
+                Max:
+                <input type="number" name="duration_max">
+                <br>
 
             </div>
 
+        <input type="submit">
         </div>
 
-    </form>
     </div>
+    </form>
 
     <!-- SPELL OUTPUT DIV-->
     <div id="spell_window" class="output"> 
 
         {% for spell in display %}
-        <div id="{{ spell.name }}" name="{{ spell.name }}">
-            {{ show(spell) }}
+        <div id="{{ spell.name }}" name="{{ spell.id }}">
+            {{ show(spell)|safe }}
         </div>
         <br>
         {% endfor %}

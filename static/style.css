@@ -13,13 +13,15 @@ body
 {
     top:0;
     width:100%;
+    display: inline-block;
+    padding-bottom: 10px;
 }
 
 #spell_window
 {
-    height: 100%;
     width: 100%;
-	overflow-y: scroll
+    left: 25%;
+    padding-right: 10px;
 }
 
 .pane {
