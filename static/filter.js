@@ -18,6 +18,7 @@ window.onload = function set_display_cookie()
     document.cookie += ';';
 
     // Remember form
+    /*
     var form = document.getElementById('inquiry').children;
     for (var i=0; i < form.length; ++i)
     {
@@ -29,6 +30,7 @@ window.onload = function set_display_cookie()
             }
         }
     }
+    */
 
     // Add experation date
     document.cookie += ';' + expires;
