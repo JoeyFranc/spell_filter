@@ -4,8 +4,8 @@
 <head>
 
     <title>Joey's Spell Filter v.a.0.1</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../static/style.css">
-    <script src="../static/filter.js"></script>
 
 </head>
 <body>
@@ -25,22 +25,22 @@
             <div name="method" class="pane">
                 <b>Search Method?</b>
                     By name:
-                    <input type="radio" name="search_method" value="name" checked>
+                    <input type="radio" id="radio_name" name="search_method" value="name" checked>
                     By value:
-                    <input type="radio" name="search_method" value="value">
+                    <input type="radio" id="radio_value" name="search_method" value="value">
             </div>
         </div>
 
         <br><br>
             
         <!-- Search by name -->
-        <div name="name_search" class="pane">
+        <div name="name_search" class="pane visible_block">
             <h2>Search by names (seperate by commas):</h2>
                 <input type="search" name="name" value="">
                 <input type="submit">
         </div>
             
-        <div name="value_search" class="pane">
+        <div name="value_search" class="pane invisible_block" >
             <h2>Search by value:</h2>
 
             <!-- School -->
@@ -189,4 +189,7 @@
     </div>
 
 </body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="../static/filter.js"></script>
 </html>

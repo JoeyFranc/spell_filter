@@ -6,8 +6,8 @@ html
 
 body
 {
-    padding: 0;
-} 
+    padding: 5px;
+}
 
 #filter
 {
@@ -28,4 +28,16 @@ body
     float: left;
     margin-right: 20px;
     padding-right: 20px;
+}
+
+div[name=value_search] {
+	display: none;
+}
+
+div.invisible_block {
+	display: none;
+}
+
+div.visible_block {
+	display: block
 }
