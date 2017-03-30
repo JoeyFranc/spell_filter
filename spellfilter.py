@@ -76,3 +76,6 @@ def index():
 def error():
 
     return 'THERE WAS AN ERROR D:'
+
+if __name__ == '__main__':
+    app.run()
