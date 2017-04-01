@@ -35,3 +35,17 @@ window.onload = function set_display_cookie()
     // Add experation date
     document.cookie += ';' + expires;
 }
+
+$('#radio_name').change(function () {
+	// make value search invisible
+	$('div[name=value_search]').toggleClass("visible_block invisible_block");
+	// make name search visible
+	$('div[name=name_search]').toggleClass("invisible_block visible_block");
+})
+
+$('#radio_value').change(function () {
+	// make name search invisible
+	$('div[name=name_search]').toggleClass("visible_block invisible_block");
+	// make value search visible
+	$('div[name=value_search]').toggleClass("visible_block invisible_block");
+})

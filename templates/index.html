@@ -4,8 +4,9 @@
 <head>
 
     <title>Joey's Spell Filter v.a.0.1</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
     <link rel="stylesheet" type="text/css" href="../static/style.css">
-    <script src="../static/filter.js"></script>
 
 </head>
 <body>
@@ -17,30 +18,32 @@
 
         <!-- Search settings --> 
         <div name="settings">
-            <div name="reset" class="pane">
+            <div name="reset" class="toggle">
                 <b>Append to previous search?</b>
                     <input type="checkbox" name="append" value="true">
             </div>
 
-            <div name="method" class="pane">
-                <b>Search Method?</b>
-                    By name:
-                    <input type="radio" name="search_method" value="name">
-                    By value:
-                    <input type="radio" name="search_method" value="value" checked>
+			<div class="toggle"><b class="center_title">Search Method?</b></div>
+            <div name="method" class="toggle btn-group" data-toggle="buttons">
+				<label class="btn btn-primary">
+                    <input type="radio" id="radio_name" name="search_method" value="name" checked></input>
+					 By name:
+				</label>
+				<label class="btn btn-primary">
+                    <input type="radio" id="radio_value" name="search_method" value="value"></input>
+					By value:
+				</label>
             </div>
         </div>
-
-        <br><br>
             
         <!-- Search by name -->
-        <div name="name_search" class="pane">
+        <div name="name_search" class="pane visible_block">
             <h2>Search by names (seperate by commas):</h2>
                 <input type="search" name="name" value="">
-                <input type="submit">
+                <input type="submit" class="btn btn-primary">
         </div>
             
-        <div name="value_search" class="pane">
+        <div name="value_search" class="pane invisible_block" >
             <h2>Search by value:</h2>
 
             <!-- School -->
@@ -169,8 +172,8 @@
                 <br>
 
             </div>
-
-        <input type="submit">
+		<br>
+        <input type="submit" class="btn btn-primary">
         </div>
 
     </div>
@@ -189,4 +192,7 @@
     </div>
 
 </body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="../static/filter.js"></script>
 </html>
