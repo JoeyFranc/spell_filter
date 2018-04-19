@@ -1,15 +1,6 @@
 import json
 from enums import *
-
-
-
-""" Exception Types """
-
-class Unknown_Value(Exception):
-    def __init__(self, kind, value):
-        self.kind   = kind
-        self.source = value
-    def __str__(self): return 'Unknown '+self.kind+':\n'+self.source
+from source import get_source
 
 
 
@@ -17,13 +8,11 @@ class Unknown_Value(Exception):
 
 class Spell(object):
 
-
-
     def __init__(self, json_obj):
         
         # Default information
         self.name               = json_obj['name']
-        self.source             = _get_source(json_obj['page'])
+        self.source             = get_source(json_obj['page'])
         self.description        = json_obj['desc']
         self.level              = _get_level(json_obj['level'])
         self.school             = _get_school(json_obj['school'])
@@ -34,17 +23,12 @@ class Spell(object):
         self.s                  = 'S' in json_obj['components']
         self.m                  = 'M' in json_obj['components']
         self.duration           = json_obj['duration']
-
-        # Other helpful tags
         self.is_touch           = 'Touch' in self.range
         self.is_self            = 'Self' in self.range
         self.is_ritual          = json_obj['ritual'] == 'yes'
         self.is_instant         = "nstantaneous" in self.duration
         self.is_concentration   = json_obj['concentration'] == 'yes'
-        if 'higher_level' in json_obj:
-            self.higher_level   = json_obj['higher_level']
-        else:
-            self.higher_level   = None
+        self.higher_level       = json_obj.get('higher_level', None)
         if self.m and 'material' in json_obj:
             self.material       = json_obj['material']
             self.cost           = _get_cost(self.material)
@@ -58,36 +42,26 @@ class Spell(object):
         if self.s: output += 'S'
         if self.m:
             output += 'M '
-            if self.material: output += self.material
+            if self.material:
+                output += self.material
             output+='('+str(self.cost)+' gp)'
-        if output: return output
-        return 'None'
+        return output
 
     def __str__(self):
-
         # The title
         output = _h1(self.name) + '\n\n'
 
         # Make the heading
-        block = 'Level '+ str(self.level)
-        block += ' ' + school2str(self.school)
-        output += _h3(block) + '\n\n'
-
-        # Note 
-        block = ''
-        for c in self.classes:
-            block += class2str(c) + ', '
-        if block:
-            block = block[:-2] + ' spell  |  '
-        block += v_source2str(self.source)
-        output += _p(block)
+        output += _h2('Level '+ str(self.level) + ' ' + self.school) + '\n\n'
+        output += _h3(', '.join(self.classes) + ' spell.') + '\n\n'
+        output += _p('Source:  ' + str(self.source)) + '\n\n'
 
         # Points of interest
-        output += \
-        _p( _b('Casting Time: ')+self.casting_time ) +'\n' + \
-        _p( _b('Range: ')+self.range ) + '\n' + \
-        _p( _b('Components: ')+self._print_components() ) + '\n' + \
-        _p( _b('Duration: ')+self.duration ) + '\n\n'
+        output += str(
+            _p( _b('Casting Time: ')+str(self.casting_time) ) +'\n' +
+            _p( _b('Range: ')+str(self.range) ) + '\n' +
+            _p( _b('Components: ')+self._print_components() ) + '\n' +
+            _p( _b('Duration: ')+str(self.duration) ) + '\n\n')
 
         # Add the description
         output += self.description
@@ -118,60 +92,31 @@ def _h3(string): return '<h3>'+string+'</h3>'
 def _b(string): return '<b>'+string+'</b>'
 def _p(string): return '<p>'+string+'</p>'
 
-def _get_source(line):
-# line is a json string containing the source name. returns source enum
-
-    if   'phb'  in line: return PHB
-    elif 'ee'   in line: return EE
-    elif 'scag' in line: return SCAG
-    elif 'trot' in line: return TROT
-    elif 'ua'   in line: return UA
-
-    raise Unknown_Value('spell source', line)
 
 def _get_level(line):
-# Convert a json value to an integer
+# Convert a json level string to an integer
+    level = ''.join(filter(lambda c: c.isdigit(), line))
+    return int(level) if level else 0
 
-    if 'antrip' in line: return 0
-    for char in line:
-        if char.isdigit(): return int(char)
 
-    raise Unknown_Value('level', line)
-
+SCHOOLS = set()
 def _get_school(line):
 # Convert a json value to a school of magic enum
+    SCHOOLS.add(line)
+    return line
 
-    if   'bjuration' in line:       return ABJURATION
-    elif 'onjuration' in line:      return CONJURATION
-    elif 'ivination' in line:       return DIVINATION
-    elif 'nchantment' in line:      return ENCHANTMENT
-    elif 'vocation' in line:        return EVOCATION
-    elif 'llusion' in line:         return ILLUSION
-    elif 'ecromancy' in line:       return NECROMANCY
-    elif 'ransmutation' in line:    return TRANSMUTATION
 
-    raise Unknown_Source('magic school', line)
-
+CLASSES = set()
 def _get_class(line):
-# Convert a json value into a list of class enums
-
-    # 1. line.split converts to list of string representations of classes
-    # 2. str2class turns a string representation into an enum
-    # 3. Use str2class on every string in line.split(',')
-    classes = []
-    for string_repr in line.split(','):
-        string_repr = string_repr.lstrip()
-        string_repr = string_repr.rstrip()
-        classes += [str2class(string_repr)]
+    classes = set(line.split(','))
+    CLASSES.add(classes)
     return classes
 
 def _is_cost_valid(char):
-
     return char.isdigit() or char != ' ' or char != ','
 
 def _get_cost(material):
 # Converts a material description to a cost (int representing gp)
-
     end = material.find('gp')
     # Dummy check.  There is no cost
     if end == -1: return 0
