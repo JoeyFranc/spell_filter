@@ -3,14 +3,6 @@
 # Constants
 NUM_SPELLS = 415
 
-# source
-PHB = 0
-EE = 1
-SCAG = 2
-TROT = 3
-UA = 4
-SOURCE_SIZE = 5
-
 # race
 HUMAN = 0
 DWARF = 1
@@ -46,16 +38,16 @@ WIZARD = 11
 RITUAL_CASTER = 12
 CLASSES_SIZE = 13
 
-# school
-ABJURATION = 0
-CONJURATION = 1
-DIVINATION = 2
-ENCHANTMENT = 3
-EVOCATION = 4
-ILLUSION = 5
-NECROMANCY = 6
-TRANSMUTATION = 7
-SCHOOL_SIZE = 8
+SCHOOLS = {
+    'Abjuration',
+    'Conjuration',
+    'Divination',
+    'Enchantment',
+    'Evocation',
+    'Illusion',
+    'Necromancy',
+    'Transmuation',
+}
 
 
 class Invalid_Enum(Exception):
